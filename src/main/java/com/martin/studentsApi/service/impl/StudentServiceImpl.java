@@ -54,6 +54,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public Student saveStudent(Student student) {
+        return this.studentDAO.save(student);
+    }
+
+    @Override
     public void deleteStudentById(Long id) {
         studentDAO.delete(studentDAO.findById(id)
                 .orElseThrow(StudentNotExistException::new));

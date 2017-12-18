@@ -19,6 +19,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping(value = "/api/students", produces = MediaType.APPLICATION_JSON_VALUE)
+//@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class StudentsRestController {
 
     private StudentService service;
@@ -45,7 +47,6 @@ public class StudentsRestController {
 
     }
 
-    // TODO add validation
     @RequestMapping(method = POST)
     public ResponseEntity addStudent(@RequestParam("id") String id,
                                      @RequestParam("firstName") String firstName,
@@ -86,19 +87,26 @@ public class StudentsRestController {
         }
     }
 
+//    @RequestMapping(value = "{id}", method = PATCH)
+//    public ResponseEntity editStudent(@RequestParam("firstName") Optional<String> fname,
+//                                      @RequestParam("lastName") Optional<String> lname,
+//                                      @RequestParam("studyProgramName") Optional<String> spName,
+//                                      @PathVariable("id") String id) {
+//        try {
+//            service.editStudent(Long.parseLong(id), fname, lname, spName);
+//            return new ResponseEntity(HttpStatus.OK);
+//        } catch (StudentNotExistException | NumberFormatException e) {
+//            return new ResponseEntity(HttpStatus.NOT_FOUND);
+//        } catch (StudyProgramNotExistException e) {
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }
+//    }
+
     @RequestMapping(value = "{id}", method = PATCH)
-    public ResponseEntity editStudent(@RequestParam("firstName") Optional<String> fname,
-                                      @RequestParam("lastName") Optional<String> lname,
-                                      @RequestParam("studyProgramName") Optional<String> spName,
-                                      @PathVariable("id") String id) {
-        try {
-            service.editStudent(Long.parseLong(id), fname, lname, spName);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (StudentNotExistException | NumberFormatException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        } catch (StudyProgramNotExistException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity editStudent(@RequestBody Student student, @PathVariable String id) {
+        System.out.println(student.getFirstName()+student.getLastName()+student.getStudyProgram().getName());
+        this.service.saveStudent(student);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 

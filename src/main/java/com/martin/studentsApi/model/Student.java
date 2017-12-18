@@ -56,4 +56,8 @@ public class Student {
     public void setStudyProgram(StudyProgram studyProgram) {
         this.studyProgram = studyProgram;
     }
+
+    public StudyProgram getStudyProgram() {
+        return studyProgram;
+    }
 }

@@ -13,6 +13,8 @@ public interface StudentService {
 
     Student saveStudent(Long id, String firstName, String lastName, String studyProgramName);
 
+    Student saveStudent(Student student);
+
     void deleteStudentById(Long id);
 
     Student editStudent(Long index, Optional<String> firstName, Optional<String> lastName, Optional<String> studyProgramName);
