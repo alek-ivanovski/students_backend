@@ -24,6 +24,12 @@ public class StudyProgramServiceImpl implements StudyProgramService {
     }
 
     @Override
+    public StudyProgram findStudyProgramById(Long id) {
+        return this.studyProgramDAO.findById(id)
+                .orElseThrow(StudyProgramNotExistException::new);
+    }
+
+    @Override
     public StudyProgram saveStudyProgram(String name) throws DataIntegrityViolationException {
         StudyProgram sp = new StudyProgram(name);
         return studyProgramDAO.save(sp);
@@ -31,8 +37,7 @@ public class StudyProgramServiceImpl implements StudyProgramService {
 
     @Override
     public void deleteStudyProgramById(Long id) {
-        studyProgramDAO.delete(studyProgramDAO.findById(id)
-                .orElseThrow(StudyProgramNotExistException::new));
+        studyProgramDAO.deleteById(id);
     }
 
     @Override
@@ -41,6 +46,15 @@ public class StudyProgramServiceImpl implements StudyProgramService {
                 .orElseThrow(StudyProgramNotExistException::new);
         sp.setName(name);
         return studyProgramDAO.save(sp);
+    }
+
+    @Override
+    public void validateStudyProgram(StudyProgram studyProgram) {
+        StudyProgram sp = this.studyProgramDAO.findById(studyProgram.getId())
+                .orElseThrow(StudyProgramNotExistException::new);
+        if (!sp.getName().equals(studyProgram.getName())) {
+            throw new StudyProgramNotExistException();
+        }
     }
 
 

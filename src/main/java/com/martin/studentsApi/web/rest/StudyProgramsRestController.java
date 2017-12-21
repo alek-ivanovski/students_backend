@@ -31,6 +31,11 @@ public class StudyProgramsRestController {
         return service.findAllStudyPrograms();
     }
 
+    @RequestMapping(value="{id}", method = GET)
+    public StudyProgram getAllStudyPrograms(@PathVariable String id) {
+        return service.findStudyProgramById(Long.parseLong(id));
+    }
+
     @RequestMapping(value = "{id}", method = DELETE)
     public ResponseEntity deleteStudyProgram(@PathVariable String id) {
         try {
