@@ -8,11 +8,11 @@ public interface StudyProgramService {
 
     StudyProgram findStudyProgramById(Long id);
 
-    StudyProgram saveStudyProgram(String name);
+    StudyProgram saveStudyProgram(StudyProgram studyProgram);
+
+    StudyProgram updateStudyProgram(Long id, StudyProgram studyProgram);
 
     void deleteStudyProgramById(Long id);
 
-    StudyProgram editStudyProgram(Long id, String name);
-
-    void validateStudyProgram(StudyProgram studyProgram);
+    StudyProgram validateStudyProgram(StudyProgram studyProgram);
 }

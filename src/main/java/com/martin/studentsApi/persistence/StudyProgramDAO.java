@@ -9,5 +9,4 @@ public interface StudyProgramDAO extends CrudRepository<StudyProgram, Long> {
 
     Optional<StudyProgram> findById(Long id);
     Optional<StudyProgram> findByName(String name);
-    void deleteById(Long id);
 }

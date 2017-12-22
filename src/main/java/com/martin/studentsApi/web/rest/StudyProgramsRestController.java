@@ -37,39 +37,35 @@ public class StudyProgramsRestController {
     }
 
     @RequestMapping(value = "{id}", method = DELETE)
-    public ResponseEntity deleteStudyProgram(@PathVariable String id) {
+    public ResponseEntity<?> deleteStudyProgram(@PathVariable String id) {
         try {
             service.deleteStudyProgramById(Long.parseLong(id));
-            return new ResponseEntity(HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(0);
         } catch (StudyProgramNotExistException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Cannot delete study program");
         }
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity addStudyProgram(@RequestParam("studyProgramName") String name) {
+    public ResponseEntity<?> addStudyProgram(@RequestBody StudyProgram studyProgram) {
         try {
-            StudyProgram sp = service.saveStudyProgram(name);
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .location(URI.create("http://localhost:8080/studentsApi/study_programs/" + sp.getId()))
-                    .body(sp);
+            StudyProgram sp = service.saveStudyProgram(studyProgram);
+            URI locationUri = URI.create("http://localhost:8080/studentsApi/study_programs/" + sp.getId());
+            return ResponseEntity.created(locationUri).body(sp);
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body("Study Program with the name '" + name + "' already exists");
+                    .body("Study Program with the name '" + studyProgram.getName() + "' already exists");
         }
     }
 
     @RequestMapping(value = "{id}", method = PATCH)
-    public ResponseEntity editStudyProgram(@PathVariable String id,
-                                           @RequestParam String studyProgramName) {
-        try {
-            service.editStudyProgram(Long.parseLong(id), studyProgramName);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (StudyProgramNotExistException | NumberFormatException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<StudyProgram> editStudyProgram(@PathVariable String id,
+                                           @RequestBody StudyProgram studyProgram) {
+            StudyProgram sp = service.updateStudyProgram(Long.parseLong(id), studyProgram);
+            return ResponseEntity.ok(sp);
     }
 
 }
