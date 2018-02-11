@@ -9,6 +9,5 @@ import java.util.Optional;
 public interface StudentDAO extends CrudRepository<Student, Long> {
 
     Optional<Student> findById(Long id);
-
     List<Student> findByStudyProgramId(Long id);
 }

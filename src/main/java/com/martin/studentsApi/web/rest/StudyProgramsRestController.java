@@ -1,7 +1,8 @@
 package com.martin.studentsApi.web.rest;
 
+import com.martin.studentsApi.model.Student;
 import com.martin.studentsApi.model.StudyProgram;
-import com.martin.studentsApi.model.exceptions.StudyProgramNotExistException;
+import com.martin.studentsApi.model.exceptions.StudyProgramNotFoundException;
 import com.martin.studentsApi.service.StudyProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,7 +16,7 @@ import java.net.URI;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
-@RequestMapping(value = "/api/study-programs", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/study_programs", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin
 public class StudyProgramsRestController {
 
@@ -28,20 +29,20 @@ public class StudyProgramsRestController {
 
     @RequestMapping(method = GET)
     public Iterable<StudyProgram> getAllStudyPrograms() {
-        return service.findAllStudyPrograms();
+        return service.getAllStudyPrograms();
     }
 
     @RequestMapping(value="{id}", method = GET)
     public StudyProgram getAllStudyPrograms(@PathVariable String id) {
-        return service.findStudyProgramById(Long.parseLong(id));
+        return service.getStudyProgramById(id);
     }
 
     @RequestMapping(value = "{id}", method = DELETE)
     public ResponseEntity<?> deleteStudyProgram(@PathVariable String id) {
         try {
-            service.deleteStudyProgramById(Long.parseLong(id));
+            service.deleteStudyProgramById(id);
             return ResponseEntity.status(HttpStatus.OK).body(0);
-        } catch (StudyProgramNotExistException e) {
+        } catch (StudyProgramNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Cannot delete study program");
@@ -64,8 +65,13 @@ public class StudyProgramsRestController {
     @RequestMapping(value = "{id}", method = PATCH)
     public ResponseEntity<StudyProgram> editStudyProgram(@PathVariable String id,
                                            @RequestBody StudyProgram studyProgram) {
-            StudyProgram sp = service.updateStudyProgram(Long.parseLong(id), studyProgram);
+            StudyProgram sp = service.updateStudyProgram(id, studyProgram);
             return ResponseEntity.ok(sp);
+    }
+
+    @RequestMapping(value = "{id}/students", method = GET)
+    public Iterable<Student> getStudentByStudyProgram(@PathVariable String id) {
+        return this.service.getStudentsByStudyProgramId(id);
     }
 
 }

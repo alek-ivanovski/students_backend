@@ -7,7 +7,7 @@ import java.util.List;
 @Table(name = "study_programs")
 public class StudyProgram {
 
-    public StudyProgram() {}
+    public StudyProgram() {} // JPA only
 
     public StudyProgram(String name) {
         this.name = name;

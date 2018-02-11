@@ -1,45 +1,45 @@
 package com.martin.studentsApi.service.impl;
 
+import com.martin.studentsApi.model.Student;
 import com.martin.studentsApi.model.StudyProgram;
-import com.martin.studentsApi.model.exceptions.StudyProgramNotExistException;
+import com.martin.studentsApi.model.exceptions.StudentIndexMismatchException;
+import com.martin.studentsApi.model.exceptions.StudentNotFoundException;
+import com.martin.studentsApi.model.exceptions.StudyProgramIdMismatchException;
+import com.martin.studentsApi.model.exceptions.StudyProgramNotFoundException;
+import com.martin.studentsApi.persistence.StudentDAO;
 import com.martin.studentsApi.persistence.StudyProgramDAO;
 import com.martin.studentsApi.service.StudyProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.List;
 
 @Service
 public class StudyProgramServiceImpl implements StudyProgramService {
 
-    private StudyProgramDAO studyProgramDAO;
-
     @Autowired
-    public StudyProgramServiceImpl(StudyProgramDAO repository) {
-        this.studyProgramDAO = repository;
-    }
+    private StudyProgramDAO studyProgramDAO;
+    @Autowired
+    private StudentDAO studentDAO;
 
     @Override
-    public Iterable<StudyProgram> findAllStudyPrograms() {
+    public Iterable<StudyProgram> getAllStudyPrograms() {
         return studyProgramDAO.findAll();
     }
 
     @Override
-    public StudyProgram findStudyProgramById(Long id) {
-        return this.studyProgramDAO.findById(id)
-                .orElseThrow(StudyProgramNotExistException::new);
+    public StudyProgram getStudyProgramById(String id) {
+        return this.studyProgramDAO.findById(Long.parseLong(id))
+                .orElseThrow(() -> new StudyProgramNotFoundException(id));
     }
 
     @Override
-    public void deleteStudyProgramById(Long id) {
-        studyProgramDAO.delete(studyProgramDAO.findById(id)
-                .orElseThrow(StudyProgramNotExistException::new));
+    public void deleteStudyProgramById(String id) {
+        studyProgramDAO.delete(studyProgramDAO.findById(Long.parseLong(id))
+                .orElseThrow(() -> new StudentNotFoundException(id)));
     }
-
-//    @Override
-//    public StudyProgram saveStudyProgram(String name) throws DataIntegrityViolationException {
-//        StudyProgram sp = new StudyProgram(name);
-//        return studyProgramDAO.save(sp);
-//    }
 
     @Override
     public StudyProgram saveStudyProgram(StudyProgram studyProgram) throws DataIntegrityViolationException {
@@ -48,34 +48,24 @@ public class StudyProgramServiceImpl implements StudyProgramService {
     }
 
     @Override
-    public StudyProgram updateStudyProgram(Long id, StudyProgram studyProgram) {
-        if (id.equals(studyProgram.getId())) {
-            studyProgramDAO.findById(id)
-                    .orElseThrow(StudyProgramNotExistException::new);
-            return this.studyProgramDAO.save(studyProgram);
-        } else {
-            // TODO create new exception for this case
-            throw new StudyProgramNotExistException();
-        }
+    public StudyProgram updateStudyProgram(String id, StudyProgram studyProgram) {
+//        this.validateStudyProgram(id);
+        if (!id.equals(studyProgram.getId().toString()))
+            throw new StudyProgramIdMismatchException(id, studyProgram.getId().toString());
+        return this.studyProgramDAO.save(studyProgram);
     }
 
-//    @Override
-//    public StudyProgram updateStudyProgram(Long id, String name) {
-//        StudyProgram sp = studyProgramDAO.findById(id)
-//                .orElseThrow(StudyProgramNotExistException::new);
-//        sp.setName(name);
-//        return studyProgramDAO.save(sp);
-//    }
+    @Override
+    public List<Student> getStudentsByStudyProgramId(String id) {
+        StudyProgram sp = studyProgramDAO.findById(Long.parseLong(id))
+                .orElseThrow(() -> new StudyProgramNotFoundException(id));
+        return studentDAO.findByStudyProgramId(sp.getId());
+    }
 
     @Deprecated
     @Override
     public StudyProgram validateStudyProgram(StudyProgram studyProgram) {
-        StudyProgram sp = this.studyProgramDAO.findById(studyProgram.getId())
-                .orElseThrow(StudyProgramNotExistException::new);
-        if (!sp.getName().equals(studyProgram.getName())) {
-            throw new StudyProgramNotExistException();
-        }
-        return sp;
+        throw new NotImplementedException();
     }
 
 

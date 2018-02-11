@@ -1,19 +1,20 @@
 package com.martin.studentsApi.web.rest;
 
 import com.martin.studentsApi.model.Student;
-import com.martin.studentsApi.model.StudyProgram;
-import com.martin.studentsApi.model.exceptions.InvalidIndexFormatException;
-import com.martin.studentsApi.model.exceptions.StudentNotExistException;
-import com.martin.studentsApi.model.exceptions.StudyProgramNotExistException;
+import com.martin.studentsApi.model.exceptions.StudentNotFoundException;
 import com.martin.studentsApi.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.net.URI;
-import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -23,54 +24,48 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @CrossOrigin
 public class StudentsRestController {
 
-    private StudentService service;
+    private static final String DOMAIN_NAME = "http://localhost:8080/";
 
     @Autowired
-    public StudentsRestController(StudentService service) {
-        this.service = service;
+    private StudentService service;
+
+    @GetMapping(value = "{id}")
+    public Student getStudent(@PathVariable String id) {
+        return service.findStudentById(id);
     }
 
-    @RequestMapping(method = GET)
-    public Iterable<Student> getAllStudents() {
-        return service.findAllStudents();
+    @PostMapping
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+        Student result = this.service.addStudent(student);
+        // get the location on which the new resource is created
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(result.getId()).toUri();
+        return ResponseEntity.created(location).body(result);
     }
 
-    @RequestMapping(value = "{id}", method = GET)
-    public ResponseEntity<Student> getStudent(@PathVariable String id) {
-        Student student;
-        try {
-            student = service.findStudentById(Long.parseLong(id));
-            return new ResponseEntity<>(student, HttpStatus.OK);
-        } catch (StudentNotExistException | NumberFormatException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @RequestMapping(value = "{id}", method = PUT)
+    public Student overrideStudent(@RequestBody Student student, @PathVariable String id) {
+        return this.service.overrideStudent(id, student);
     }
 
-    @RequestMapping(value = "by-study-program/{id}", method = GET)
-    public Iterable<Student> getStudentByStudyProgram(@PathVariable String id) {
-        return service.findStudentsByStudyProgramId(Long.parseLong(id));
+    @RequestMapping(value = "{id}", method = PATCH)
+    public Student updateStudent(@RequestBody Student student, @PathVariable String id) {
+        return this.service.updateStudent(id, student);
     }
 
     @RequestMapping(value = "{id}", method = DELETE)
     public ResponseEntity<Integer> deleteStudent(@PathVariable String id) {
         try {
-            service.deleteStudentById(Long.parseLong(id));
+            service.deleteStudentById(id);
             return ResponseEntity.status(HttpStatus.OK).body(0);
-        } catch (StudentNotExistException e) {
+        } catch (StudentNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
         }
     }
 
-
-    @RequestMapping(value = "{id}", method = PATCH)
-    public Student editStudent(@RequestBody Student student, @PathVariable String id) {
-        return this.service.updateStudent(Long.parseLong(id), student);
+    @GetMapping
+    public Iterable<Student> getAllStudents() {
+        return service.getAllStudents();
     }
-
-    @RequestMapping(method = POST)
-    public Student addStudent(@RequestBody Student student) {
-        return this.service.saveStudent(student);
-    }
-
-
 }

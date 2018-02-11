@@ -8,22 +8,19 @@ import java.util.Optional;
 
 public interface StudentService {
 
-    Iterable<Student> findAllStudents();
+    Student findStudentById(String id);
 
-    Student findStudentById(Long id);
+    Student addStudent(Student student);
 
-//    Student saveStudent(Long id, String firstName, String lastName, String studyProgramName);
-    Student saveStudent(Student student);
+    Student overrideStudent(String id, Student student);
 
-    Student updateStudent(Long id, Student student);
+    Student updateStudent(String id, Student student);
 
-    void deleteStudentById(Long id);
+    void deleteStudentById(String id);
 
-//    Student editStudent(Long index, Optional<String> firstName, Optional<String> lastName, Optional<String> studyProgramName);
+    Iterable<Student> getAllStudents();
 
-    List<Student> findStudentsByStudyProgramId(Long id);
+    void validateStudent(String id);
 
-    void validateStudentId(Long id);
-
-
+    void validateStudentIdFormat(String id);
 }
