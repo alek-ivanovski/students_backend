@@ -33,7 +33,7 @@ public class StudentServiceImpl implements StudentService {
                 {
                     throw new StudentAlreadyExistsException(s.getId().toString());
                 });
-        this.studyProgramService.validateStudyProgram(student.getStudyProgram());
+//        this.studyProgramService.validateStudyProgram(student.getStudyProgram());
         this.studentDAO.save(student);
         return student;
     }

@@ -1,17 +1,24 @@
 package com.martin.studentsApi.web.rest;
 
 import com.martin.studentsApi.model.Student;
+import com.martin.studentsApi.model.StudentResource;
 import com.martin.studentsApi.model.StudyProgram;
+import com.martin.studentsApi.model.StudyProgramResource;
 import com.martin.studentsApi.model.exceptions.StudyProgramNotFoundException;
 import com.martin.studentsApi.service.StudyProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -27,14 +34,19 @@ public class StudyProgramsRestController {
         this.service = service;
     }
 
-    @RequestMapping(method = GET)
-    public Iterable<StudyProgram> getAllStudyPrograms() {
-        return service.getAllStudyPrograms();
+    @GetMapping
+    public Resources<StudyProgramResource> getAllStudyPrograms() {
+        List<StudyProgramResource> studyProgramResources = StreamSupport
+                .stream(service.getAllStudyPrograms().spliterator(), false)
+                .map(StudyProgramResource::new)
+                .collect(Collectors.toList());
+        return new Resources<StudyProgramResource>(studyProgramResources);
     }
 
-    @RequestMapping(value="{id}", method = GET)
-    public StudyProgram getAllStudyPrograms(@PathVariable String id) {
-        return service.getStudyProgramById(id);
+    @GetMapping(value = "{id}")
+    public Resource<StudyProgramResource> getStudyProgramById(@PathVariable String id) {
+        return new Resource<StudyProgramResource>(
+                new StudyProgramResource(service.getStudyProgramById(id)));
     }
 
     @RequestMapping(value = "{id}", method = DELETE)
@@ -64,14 +76,18 @@ public class StudyProgramsRestController {
 
     @RequestMapping(value = "{id}", method = PATCH)
     public ResponseEntity<StudyProgram> editStudyProgram(@PathVariable String id,
-                                           @RequestBody StudyProgram studyProgram) {
-            StudyProgram sp = service.updateStudyProgram(id, studyProgram);
-            return ResponseEntity.ok(sp);
+                                                         @RequestBody StudyProgram studyProgram) {
+        StudyProgram sp = service.updateStudyProgram(id, studyProgram);
+        return ResponseEntity.ok(sp);
     }
 
     @RequestMapping(value = "{id}/students", method = GET)
-    public Iterable<Student> getStudentByStudyProgram(@PathVariable String id) {
-        return this.service.getStudentsByStudyProgramId(id);
+    public Resources<StudentResource> getStudentsByStudyProgram(@PathVariable String id) {
+        List<StudentResource> studentResourceList = StreamSupport
+                .stream(this.service.getStudentsByStudyProgramId(id).spliterator(), false)
+                .map(StudentResource::new)
+                .collect(Collectors.toList());
+        return new Resources<StudentResource>(studentResourceList);
     }
 
 }

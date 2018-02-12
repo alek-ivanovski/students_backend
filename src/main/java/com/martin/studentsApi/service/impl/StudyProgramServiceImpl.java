@@ -2,7 +2,6 @@ package com.martin.studentsApi.service.impl;
 
 import com.martin.studentsApi.model.Student;
 import com.martin.studentsApi.model.StudyProgram;
-import com.martin.studentsApi.model.exceptions.StudentIndexMismatchException;
 import com.martin.studentsApi.model.exceptions.StudentNotFoundException;
 import com.martin.studentsApi.model.exceptions.StudyProgramIdMismatchException;
 import com.martin.studentsApi.model.exceptions.StudyProgramNotFoundException;
@@ -13,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.List;
 
 @Service
 public class StudyProgramServiceImpl implements StudyProgramService {
@@ -56,7 +53,7 @@ public class StudyProgramServiceImpl implements StudyProgramService {
     }
 
     @Override
-    public List<Student> getStudentsByStudyProgramId(String id) {
+    public Iterable<Student> getStudentsByStudyProgramId(String id) {
         StudyProgram sp = studyProgramDAO.findById(Long.parseLong(id))
                 .orElseThrow(() -> new StudyProgramNotFoundException(id));
         return studentDAO.findByStudyProgramId(sp.getId());

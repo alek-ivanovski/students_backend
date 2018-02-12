@@ -1,9 +1,13 @@
 package com.martin.studentsApi.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.martin.studentsApi.json.StudentDeserializer;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "students")
+@JsonDeserialize(using = StudentDeserializer.class)
 public class Student {
 
     public Student() {}
