@@ -1,8 +1,17 @@
 package com.martin.studentsApi.model;
 
+import org.hibernate.annotations.Fetch;
+
 import javax.persistence.*;
 import java.util.List;
 
+
+
+@NamedEntityGraph(
+        name = "graph.StudyProgram.students",
+        attributeNodes = {
+                @NamedAttributeNode("students")
+        })
 @Entity
 @Table(name = "study_programs")
 public class StudyProgram {
@@ -13,15 +22,20 @@ public class StudyProgram {
         this.name = name;
     }
 
+    public StudyProgram(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @Id
-    @GeneratedValue
+//    @GeneratedValue
     private Long id;
 
     @Column(unique = true)
     private String name;
 
     @OneToMany(mappedBy = "studyProgram")
-    private List<Student> students;
+    public List<Student> students;
 
     public String getName() {
         return name;

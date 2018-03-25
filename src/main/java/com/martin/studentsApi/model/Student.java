@@ -19,8 +19,15 @@ public class Student {
         this.studyProgram = studyProgram;
     }
 
+    public Student(String firstName, String lastName, StudyProgram studyProgram) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.studyProgram = studyProgram;
+    }
+
     @Id
     @Column(name = "id")
+//    @GeneratedValue
     private Long id;
 
     @Column(name = "first_name")
