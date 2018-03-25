@@ -29,7 +29,6 @@ import static org.junit.Assert.*;
 public class StudyProgramDAOTest {
 
     private static Logger logger = LoggerFactory.getLogger(StudentDAOTest.class);
-
     @Autowired
     private StudentDAO studentDAO;
 

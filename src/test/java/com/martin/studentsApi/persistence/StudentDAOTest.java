@@ -15,9 +15,4 @@ import javax.persistence.PersistenceContext;
 import static org.junit.Assert.*;
 
 @DataJpaTest
-public class StudentDAOTest {
-
-
-
-
-}
+public class StudentDAOTest {}
