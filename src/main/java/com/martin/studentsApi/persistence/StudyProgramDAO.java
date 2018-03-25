@@ -8,7 +8,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-
 @Profile("repo")
 public interface StudyProgramDAO extends CrudRepository<StudyProgram, Long> {
 
