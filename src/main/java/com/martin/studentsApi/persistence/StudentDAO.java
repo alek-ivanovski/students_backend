@@ -2,7 +2,9 @@ package com.martin.studentsApi.persistence;
 
 import com.martin.studentsApi.model.Student;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
@@ -15,5 +17,9 @@ public interface StudentDAO extends CrudRepository<Student, Long>, JpaSpecificat
     Optional<Student> findById(Long id);
 
     List<Student> findByStudyProgramId(Long id);
+
+    Page<Student> findAll(Pageable pageable);
+
+    List<Student> findByFirstName(String firstName, Sort sort);
 
 }
