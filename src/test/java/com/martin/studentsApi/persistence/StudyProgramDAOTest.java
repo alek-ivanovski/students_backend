@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
@@ -44,6 +45,7 @@ public class StudyProgramDAOTest {
 
     @Before
     public void setUp() {
+
         StudyProgram kni = new StudyProgram(1L, "KNI");
         StudyProgram pet = new StudyProgram(2L, "PET");
         this.studyProgramDAO.save(kni);

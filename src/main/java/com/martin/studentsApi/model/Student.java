@@ -71,4 +71,10 @@ public class Student {
     public StudyProgram getStudyProgram() {
         return studyProgram;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[ %d, %s %s]", this.id, this.firstName, this.lastName);
+    }
+
 }

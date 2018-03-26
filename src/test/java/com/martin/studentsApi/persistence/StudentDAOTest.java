@@ -20,12 +20,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.JoinType;
-import javax.validation.constraints.Null;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.springframework.data.jpa.domain.Specifications.where;
+
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
